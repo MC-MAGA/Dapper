@@ -11,9 +11,10 @@ namespace Dapper
         /// </summary>
         public static class Settings
         {
-            // disable single result by default; prevents errors AFTER the select being detected properly
-            private const CommandBehavior DefaultAllowedCommandBehaviors = ~CommandBehavior.SingleResult;
+            // disable single row/result by default; prevents errors AFTER the select being detected properly
+            private const CommandBehavior DefaultAllowedCommandBehaviors = ~(CommandBehavior.SingleResult | CommandBehavior.SingleRow);
             internal static CommandBehavior AllowedCommandBehaviors { get; private set; } = DefaultAllowedCommandBehaviors;
+
             private static void SetAllowedCommandBehaviors(CommandBehavior behavior, bool enabled)
             {
                 if (enabled) AllowedCommandBehaviors |= behavior;
@@ -120,6 +121,13 @@ namespace Dapper
                     }
                 }
             }
+
+            /// <summary>
+            /// Indicates whether single-character parameter tokens (<c>?</c> etc) will be detected and used where possible;
+            /// this feature is not recommended and will be disabled by default in future versions;
+            /// where possible, prefer named parameters (<c>@yourParam</c> etc) or Dapper's "pseudo-positional" parameters (<c>?yourParam? etc</c>).
+            /// </summary>
+            public static bool SupportLegacyParameterTokens { get; set; } = true;
 
             private static long s_FetchSize = -1;
         }
